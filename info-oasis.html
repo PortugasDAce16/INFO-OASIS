@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>Info Oasis</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+:root{
+  --grad1:linear-gradient(135deg,#667eea,#764ba2);
+  --grad2:linear-gradient(135deg,#f093fb,#f5576c);
+  --grad3:linear-gradient(135deg,#4facfe,#00f2fe);
+  --grad4:linear-gradient(135deg,#43e97b,#38f9d7);
+  --grad5:linear-gradient(135deg,#fa709a,#fee140);
+  --grad6:linear-gradient(135deg,#a18cd1,#fbc2eb);
+  --nav-bg:linear-gradient(90deg,#1a1a2e,#16213e,#0f3460);
+}
+html,body{height:100%;overflow-x:hidden;}
+body{background:linear-gradient(135deg,#e0e7ff 0%,#f0fdf4 50%,#fdf4ff 100%);min-height:100vh;}
+button{transition:all .25s cubic-bezier(.4,0,.2,1);cursor:pointer;}
+
+/* AUTH */
+.auth-bg{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);position:relative;overflow:hidden;}
+.auth-bg::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(102,126,234,.35) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(245,87,108,.25) 0%,transparent 50%),radial-gradient(ellipse at 60% 80%,rgba(67,233,123,.2) 0%,transparent 50%);}
+.floating-icons{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.fi{position:absolute;font-size:22px;opacity:.12;animation:floatUp linear infinite;}
+@keyframes floatUp{0%{transform:translateY(110vh) rotate(0deg);opacity:0;}10%{opacity:.12;}90%{opacity:.12;}100%{transform:translateY(-10vh) rotate(360deg);opacity:0;}}
+.auth-card{background:rgba(255,255,255,.06);backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:36px 38px;width:min(94vw,420px);box-shadow:0 24px 60px rgba(0,0,0,.5);position:relative;z-index:2;}
+.auth-logo{text-align:center;font-size:24px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;letter-spacing:1px;}
+.auth-sub{text-align:center;font-size:11px;color:rgba(255,255,255,.5);margin-bottom:22px;font-weight:500;}
+.auth-tabs{display:flex;margin-bottom:22px;border-radius:12px;overflow:hidden;background:rgba(255,255,255,.07);padding:4px;gap:4px;}
+.auth-tab{flex:1;padding:9px 0;font-size:13px;font-weight:600;border:none;cursor:pointer;background:transparent;color:rgba(255,255,255,.5);border-radius:9px;transition:all .3s;}
+.auth-tab.active{background:var(--grad1);color:#fff;box-shadow:0 4px 15px rgba(102,126,234,.5);}
+.auth-field{margin-bottom:14px;}
+.auth-field label{font-size:10px;color:rgba(255,255,255,.5);font-weight:700;display:block;margin-bottom:5px;letter-spacing:.8px;}
+.auth-field input{width:100%;border:1.5px solid rgba(255,255,255,.15);border-radius:10px;padding:11px 14px;font-size:13px;outline:none;background:rgba(255,255,255,.08);color:#fff;transition:all .25s;}
+.auth-field input::placeholder{color:rgba(255,255,255,.3);}
+.auth-field input:focus{border-color:#a78bfa;background:rgba(255,255,255,.12);box-shadow:0 0 0 4px rgba(167,139,250,.2);}
+.auth-submit{width:100%;background:var(--grad1);color:#fff;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;box-shadow:0 4px 20px rgba(102,126,234,.5);transition:all .3s;}
+.auth-submit:hover{box-shadow:0 8px 28px rgba(102,126,234,.7);transform:translateY(-2px);}
+.auth-err{color:#ff6b6b;font-size:11px;text-align:center;margin-top:8px;min-height:16px;font-weight:500;}
+.auth-msg{color:#43e97b;font-size:11px;text-align:center;margin-top:8px;min-height:16px;font-weight:500;}
+.pw-req{display:flex;gap:6px;flex-wrap:wrap;margin-top:-8px;margin-bottom:10px;}
+.req{font-size:9px;padding:2px 8px;border-radius:20px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.4);transition:all .3s;border:1px solid rgba(255,255,255,.1);}
+.req.ok{background:rgba(67,233,123,.2);color:#43e97b;border-color:rgba(67,233,123,.3);}
+
+/* import file button on login */
+.import-row{display:flex;align-items:center;gap:10px;margin-top:12px;}
+.import-label{flex:1;background:rgba(255,255,255,.06);border:1.5px dashed rgba(255,255,255,.2);border-radius:10px;padding:10px 14px;font-size:11px;color:rgba(255,255,255,.5);cursor:pointer;text-align:center;transition:all .25s;}
+.import-label:hover{border-color:rgba(167,139,250,.5);color:rgba(167,139,250,.9);background:rgba(167,139,250,.08);}
+#importFileInput{display:none;}
+
+/* TOPNAV */
+.topnav{background:var(--nav-bg);display:flex;align-items:center;justify-content:space-between;padding:0 16px;height:54px;box-shadow:0 4px 20px rgba(0,0,0,.3);position:sticky;top:0;z-index:100;}
+.logo{font-size:16px;font-weight:800;background:linear-gradient(90deg,#a78bfa,#60a5fa,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:1px;flex-shrink:0;}
+.toplinks{display:flex;gap:6px;align-items:center;}
+.toplinks a{font-size:11px;color:rgba(255,255,255,.75);text-decoration:none;cursor:pointer;padding:5px 10px;border-radius:8px;font-weight:500;transition:all .25s;white-space:nowrap;}
+.toplinks a:hover{background:rgba(255,255,255,.12);color:#fff;}
+.user-pill{font-size:11px;font-weight:700;background:linear-gradient(135deg,#a78bfa,#60a5fa);color:#fff;border-radius:20px;padding:5px 12px;white-space:nowrap;}
+.logout-btn{font-size:11px;color:#fff;cursor:pointer;border:1.5px solid rgba(255,100,100,.5);border-radius:8px;padding:5px 11px;background:rgba(255,80,80,.15);font-weight:600;transition:all .25s;white-space:nowrap;}
+.logout-btn:hover{background:rgba(255,80,80,.35);}
+.export-btn{font-size:11px;color:#fff;cursor:pointer;border:1.5px solid rgba(67,233,123,.4);border-radius:8px;padding:5px 11px;background:rgba(67,233,123,.15);font-weight:600;transition:all .25s;white-space:nowrap;}
+.export-btn:hover{background:rgba(67,233,123,.3);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;background:none;border:none;}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:all .3s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;background:var(--nav-bg);padding:10px 16px 14px;flex-direction:column;gap:6px;border-bottom:1px solid rgba(255,255,255,.1);}
+.mobile-menu a,.mobile-menu .user-pill,.mobile-menu .logout-btn,.mobile-menu .export-btn{font-size:13px;}
+.mobile-menu.open{display:flex;}
+
+/* CATNAV */
+.catnav{background:rgba(255,255,255,.6);backdrop-filter:blur(12px);display:flex;gap:6px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,.8);overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;}
+.catnav::-webkit-scrollbar{height:3px;}
+.catnav::-webkit-scrollbar-thumb{background:rgba(102,126,234,.4);border-radius:3px;}
+.cat-btn{background:rgba(255,255,255,.7);border:1.5px solid rgba(0,0,0,.07);color:#555;font-weight:600;font-size:11px;padding:7px 14px;cursor:pointer;border-radius:20px;transition:all .3s;box-shadow:0 2px 8px rgba(0,0,0,.06);white-space:nowrap;flex-shrink:0;}
+.cat-btn.active{color:#fff;border-color:transparent;box-shadow:0 6px 20px rgba(0,0,0,.2);}
+
+/* LAYOUT */
+.body-wrap{display:flex;min-height:calc(100vh - 110px);}
+.sidebar{width:130px;background:rgba(255,255,255,.5);backdrop-filter:blur(10px);border-right:1px solid rgba(255,255,255,.8);flex-shrink:0;}
+.sub-btn{display:block;width:100%;background:none;border:none;border-bottom:1px solid rgba(0,0,0,.05);color:#666;font-size:11px;font-weight:600;padding:13px 12px;cursor:pointer;text-align:left;transition:all .25s;}
+.sub-btn:hover{background:rgba(102,126,234,.1);color:#667eea;}
+.sub-btn.active{background:var(--grad1);color:#fff;}
+.main{flex:1;padding:14px;min-width:0;}
+.content-panel{background:rgba(255,255,255,.65);backdrop-filter:blur(16px);border-radius:16px;padding:18px;min-height:360px;border:1px solid rgba(255,255,255,.9);box-shadow:0 8px 32px rgba(0,0,0,.08);}
+.panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:12px;position:relative;}
+.panel-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#667eea,#f5576c,#43e97b);border-radius:2px;}
+.panel-title{font-size:13px;font-weight:700;color:#333;flex:1;margin-right:8px;}
+.add-btn{background:var(--grad4);color:#fff;border:none;border-radius:10px;padding:7px 14px;font-size:11px;font-weight:700;box-shadow:0 4px 14px rgba(67,233,123,.35);flex-shrink:0;}
+.add-btn:hover{transform:translateY(-2px);}
+
+/* SEARCH — fixed: always a real persistent input, never re-rendered while typing */
+.search-wrap{margin-bottom:12px;position:relative;}
+.search-wrap::before{content:'🔍';position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none;z-index:1;}
+#searchInput{
+  width:100%;border:1.5px solid rgba(102,126,234,.25);border-radius:10px;
+  padding:9px 14px 9px 36px;font-size:13px;outline:none;
+  background:rgba(255,255,255,.95);font-family:'Poppins',sans-serif;
+  transition:border-color .25s,box-shadow .25s;display:block;
+}
+#searchInput:focus{border-color:#667eea;box-shadow:0 0 0 4px rgba(102,126,234,.12);}
+
+/* ITEMS */
+.item-row{display:flex;align-items:center;background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:12px;padding:10px 12px;margin-bottom:8px;box-shadow:0 2px 10px rgba(0,0,0,.05);transition:all .25s;gap:8px;}
+.item-row:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1);}
+.item-num{font-size:10px;font-weight:700;color:#aaa;min-width:18px;flex-shrink:0;}
+.item-link{font-size:12px;color:#5b6fe6;text-decoration:none;flex:1;word-break:break-all;font-weight:500;}
+.item-link:hover{color:#764ba2;}
+.item-label{font-size:12px;color:#333;flex:1;word-break:break-word;font-weight:500;}
+.item-actions{display:flex;gap:5px;flex-shrink:0;}
+.del-btn{background:linear-gradient(135deg,#ff6b6b,#ee5a24);border:none;color:#fff;font-size:10px;cursor:pointer;padding:5px 9px;border-radius:7px;box-shadow:0 3px 10px rgba(238,90,36,.3);}
+.del-btn:hover{transform:translateY(-2px);}
+.edit-btn{background:linear-gradient(135deg,#a18cd1,#fbc2eb);border:none;color:#fff;font-size:10px;cursor:pointer;padding:5px 9px;border-radius:7px;}
+.edit-btn:hover{transform:translateY(-2px);}
+.empty{color:#bbb;font-size:13px;text-align:center;margin-top:60px;font-weight:500;}
+.empty-icon{font-size:40px;display:block;margin-bottom:10px;}
+
+/* ADD FORM */
+.add-form{background:linear-gradient(135deg,rgba(102,126,234,.07),rgba(245,87,108,.07));border:1.5px solid rgba(102,126,234,.2);border-radius:14px;padding:16px;margin-bottom:14px;}
+.add-form input{width:100%;border:1.5px solid rgba(102,126,234,.2);border-radius:10px;padding:9px 12px;font-size:12px;margin-bottom:10px;outline:none;background:rgba(255,255,255,.9);font-family:'Poppins',sans-serif;transition:all .25s;}
+.add-form input:last-of-type{margin-bottom:0;}
+.add-form input:focus{border-color:#667eea;box-shadow:0 0 0 4px rgba(102,126,234,.12);}
+.form-row{display:flex;gap:8px;margin-top:10px;}
+.save-btn{background:var(--grad1);color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:11px;font-weight:700;box-shadow:0 4px 14px rgba(102,126,234,.35);}
+.save-btn:hover{transform:translateY(-2px);}
+.cancel-btn{background:rgba(0,0,0,.06);color:#666;border:none;border-radius:10px;padding:8px 14px;font-size:11px;font-weight:600;}
+.cancel-btn:hover{background:rgba(0,0,0,.12);}
+.tag{font-size:10px;background:var(--grad1);color:#fff;border-radius:20px;padding:2px 8px;margin-left:6px;font-weight:600;}
+
+/* HERO */
+.hero{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;gap:6px;}
+.hero-step{color:#fff;border-radius:30px;padding:12px 30px;font-size:13px;font-weight:700;width:min(90%,300px);text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.18);}
+.hero-arrow{font-size:20px;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;display:flex;align-items:center;justify-content:center;padding:16px;}
+.modal{background:#fff;border-radius:20px;padding:28px 24px;width:min(94vw,580px);max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.3);}
+.modal h2{font-size:17px;font-weight:800;margin-bottom:18px;background:var(--grad1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.modal h3{font-size:13px;font-weight:700;margin:16px 0 8px;color:#333;}
+.modal p,.modal li{font-size:12px;color:#555;line-height:1.7;}
+.modal ul,.modal ol{padding-left:20px;margin-bottom:10px;}
+.modal .step{background:linear-gradient(135deg,rgba(102,126,234,.08),rgba(245,87,108,.05));border-radius:12px;padding:12px 14px;margin-bottom:10px;border-left:3px solid #667eea;}
+.modal .step strong{color:#667eea;font-size:12px;display:block;margin-bottom:4px;}
+.modal .step p{font-size:11px;color:#666;}
+.modal-close{background:var(--grad2);color:#fff;border:none;border-radius:10px;padding:9px 20px;font-size:12px;font-weight:700;margin-top:16px;cursor:pointer;box-shadow:0 4px 14px rgba(245,87,108,.35);}
+.modal-close:hover{transform:translateY(-2px);}
+.copyright-box{background:linear-gradient(135deg,rgba(102,126,234,.08),rgba(67,233,123,.05));border-radius:12px;padding:14px;margin-top:14px;border:1px solid rgba(102,126,234,.15);text-align:center;}
+.copyright-box p{font-size:11px;color:#666;}
+.copyright-box strong{color:#667eea;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1a1a2e;color:#fff;padding:10px 22px;border-radius:30px;font-size:12px;font-weight:600;z-index:9999;transition:transform .4s cubic-bezier(.4,0,.2,1);pointer-events:none;white-space:nowrap;box-shadow:0 8px 28px rgba(0,0,0,.3);}
+.toast.show{transform:translateX(-50%) translateY(0);}
+
+/* CAT ACTIVE */
+.cat-Education.active{background:var(--grad3);}
+.cat-Shopping.active{background:var(--grad5);}
+.cat-Entertainment.active{background:var(--grad2);}
+.cat-Skills.active{background:var(--grad4);}
+.cat-Travels.active{background:var(--grad1);}
+.cat-Sports.active{background:linear-gradient(135deg,#f7971e,#ffd200);}
+.cat-Blogs.active{background:linear-gradient(135deg,#56ab2f,#a8e063);}
+.cat-More.active{background:var(--grad6);}
+
+@media(max-width:600px){
+  .topnav .toplinks{display:none;}
+  .hamburger{display:flex;}
+  .sidebar{width:100px;}
+  .sub-btn{font-size:10px;padding:11px 8px;}
+  .content-panel{padding:12px;}
+  .modal{padding:20px 16px;}
+  .auth-card{padding:28px 20px;}
+}
+</style>
+</head>
+<body>
+
+<div class="floating-icons" id="floatIcons"></div>
+<div class="toast" id="toast"></div>
+
+<!-- AUTH -->
+<div class="auth-bg" id="authScreen">
+  <div class="auth-card">
+    <div class="auth-logo">✦ INFO OASIS</div>
+    <div class="auth-sub">Your personal link organizer</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Login</button>
+      <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+    <div id="loginForm">
+      <div class="auth-field">
+        <label>USERNAME (min 6 chars)</label>
+        <input id="loginUser" placeholder="Enter username" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('loginPass').focus()"/>
+      </div>
+      <div class="auth-field">
+        <label>PASSWORD</label>
+        <input id="loginPass" type="password" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+      </div>
+      <button class="auth-submit" onclick="doLogin()">🚀 Login</button>
+      <div class="import-row">
+        <label class="import-label" for="importFileInput">📂 Load saved data file (.json)</label>
+        <input type="file" id="importFileInput" accept=".json" onchange="importDataFile(event)"/>
+      </div>
+    </div>
+    <div id="signupForm" style="display:none">
+      <div class="auth-field">
+        <label>USERNAME (min 6 chars)</label>
+        <input id="signupUser" placeholder="At least 6 characters" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('signupPass').focus()"/>
+      </div>
+      <div class="auth-field">
+        <label>PASSWORD (min 8 chars)</label>
+        <input id="signupPass" type="password" placeholder="Password" autocomplete="new-password" oninput="checkPwReqs()" onkeydown="if(event.key==='Enter')document.getElementById('signupPass2').focus()"/>
+      </div>
+      <div class="pw-req">
+        <span class="req" id="req-len">8+ chars</span>
+        <span class="req" id="req-upper">A–Z</span>
+        <span class="req" id="req-lower">a–z</span>
+        <span class="req" id="req-num">0–9</span>
+        <span class="req" id="req-spec">!@#…</span>
+      </div>
+      <div class="auth-field">
+        <label>CONFIRM PASSWORD</label>
+        <input id="signupPass2" type="password" placeholder="Repeat password" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSignup()"/>
+      </div>
+      <button class="auth-submit" onclick="doSignup()">🌟 Create Account</button>
+    </div>
+    <div class="auth-err" id="authErr"></div>
+    <div class="auth-msg" id="authMsg"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen" style="display:none">
+  <div class="topnav">
+    <div class="logo">✦ INFO OASIS</div>
+    <div class="toplinks">
+      <a onclick="showHome()">🏠 Home</a>
+      <a onclick="openModal('tutorial')">📖 Tutorial</a>
+      <a onclick="openModal('about')">💡 About</a>
+      <button class="export-btn" onclick="exportData()">💾 Save File</button>
+      <span class="user-pill" id="userPill"></span>
+      <button class="logout-btn" onclick="doLogout()">⏏ Logout</button>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a onclick="showHome();toggleMenu()">🏠 Home</a>
+    <a onclick="openModal('tutorial');toggleMenu()">📖 Tutorial</a>
+    <a onclick="openModal('about');toggleMenu()">💡 About</a>
+    <button class="export-btn" onclick="exportData();toggleMenu()">💾 Save File</button>
+    <span class="user-pill" id="userPillMobile"></span>
+    <button class="logout-btn" onclick="doLogout()">⏏ Logout</button>
+  </div>
+  <div class="catnav" id="catnav"></div>
+  <div class="body-wrap">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main">
+      <div class="content-panel" id="content">
+        <!-- search lives here permanently when a cat/sub is selected -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" style="display:none" onclick="closeModalOut(event)">
+  <div class="modal" id="modalBody"></div>
+</div>
+
+<script>
+const CATS=['Education','Shopping','Entertainment','Skills','Travels','Sports','Blogs','More'];
+const CAT_ICONS={Education:'🎓',Shopping:'🛍️',Entertainment:'🎬',Skills:'⚡',Travels:'✈️',Sports:'🏆',Blogs:'✍️',More:'✨'};
+const SUBS=['Links','Documents','Files','ETC.'];
+const SUB_ICONS={Links:'🔗',Documents:'📄',Files:'📁','ETC.':'📌'};
+const FLOAT_ICONS=['🔗','📄','📁','🎓','✈️','🏆','📌','⚡','🛍️','🎬','✍️','✨','🌐','💾','🔍'];
+
+let users={}, currentUser=null, selCat=null, selSub=null, showForm=false, editIdx=null;
+// searchQ stored separately, never touched during item renders
+let searchQ='';
+
+/* ── FLOAT ── */
+(function(){
+  const c=document.getElementById('floatIcons');
+  for(let i=0;i<18;i++){
+    const el=document.createElement('div');
+    el.className='fi';
+    el.textContent=FLOAT_ICONS[Math.floor(Math.random()*FLOAT_ICONS.length)];
+    el.style.cssText=`left:${Math.random()*100}%;animation-duration:${8+Math.random()*14}s;animation-delay:${Math.random()*10}s;font-size:${14+Math.random()*18}px;`;
+    c.appendChild(el);
+  }
+})();
+
+/* ── TOAST ── */
+let toastTimer;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+/* ── STORAGE: localStorage as primary, window.storage as bonus ── */
+function loadUsersSync(){
+  try{const r=localStorage.getItem('io_users_v3');users=r?JSON.parse(r):{};}catch(e){users={};}
+}
+function saveUsersSync(){
+  try{localStorage.setItem('io_users_v3',JSON.stringify(users));}catch(e){}
+  // also persist to artifact storage if available
+  if(window.storage) window.storage.set('io_users_v3',JSON.stringify(users)).catch(()=>{});
+}
+function freshData(){
+  const d={};
+  CATS.forEach(c=>{d[c]={};SUBS.forEach(s=>{d[c][s]=[];});});
+  return d;
+}
+
+/* ── FILE EXPORT (saves .json to Downloads) ── */
+function exportData(){
+  if(!currentUser)return;
+  const payload={version:1,user:currentUser,exported:new Date().toISOString(),data:users[currentUser]};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=`InfoOasis_${currentUser}_${new Date().toISOString().slice(0,10)}.json`;
+  document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},500);
+  toast('✅ Data saved to your Downloads folder!');
+}
+
+/* ── FILE IMPORT (load .json from device) ── */
+function importDataFile(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      const payload=JSON.parse(ev.target.result);
+      if(!payload.user||!payload.data){throw new Error('Invalid file');}
+      users[payload.user]=payload.data;
+      saveUsersSync();
+      document.getElementById('authMsg').textContent=`✅ Data loaded for "${payload.user}". You can now log in.`;
+      document.getElementById('loginUser').value=payload.user;
+    }catch(err){
+      document.getElementById('authErr').textContent='❌ Invalid or corrupted data file.';
+    }
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+/* ── PW CHECK ── */
+function pwValid(p){return{len:p.length>=8,upper:/[A-Z]/.test(p),lower:/[a-z]/.test(p),num:/[0-9]/.test(p),spec:/[^A-Za-z0-9]/.test(p)};}
+function checkPwReqs(){
+  const p=document.getElementById('signupPass').value,v=pwValid(p);
+  [['len','req-len'],['upper','req-upper'],['lower','req-lower'],['num','req-num'],['spec','req-spec']]
+    .forEach(([k,id])=>document.getElementById(id).classList.toggle('ok',v[k]));
+}
+
+/* ── AUTH ── */
+function switchTab(tab){
+  document.getElementById('authErr').textContent='';
+  document.getElementById('authMsg').textContent='';
+  const isL=tab==='login';
+  document.getElementById('tabLogin').classList.toggle('active',isL);
+  document.getElementById('tabSignup').classList.toggle('active',!isL);
+  document.getElementById('loginForm').style.display=isL?'':'none';
+  document.getElementById('signupForm').style.display=isL?'none':'';
+}
+function doLogin(){
+  const u=document.getElementById('loginUser').value.trim().toLowerCase();
+  const p=document.getElementById('loginPass').value;
+  const err=document.getElementById('authErr');err.textContent='';
+  if(!u||!p){err.textContent='Please fill in all fields.';return;}
+  if(u.length<6){err.textContent='Username must be at least 6 characters.';return;}
+  if(!users[u]){err.textContent='Username not found. Please sign up or load your data file.';return;}
+  if(users[u].password!==btoa(unescape(encodeURIComponent(p)))){err.textContent='Incorrect password.';return;}
+  currentUser=u;launchApp();
+}
+function doSignup(){
+  const u=document.getElementById('signupUser').value.trim().toLowerCase();
+  const p=document.getElementById('signupPass').value,p2=document.getElementById('signupPass2').value;
+  const err=document.getElementById('authErr'),msg=document.getElementById('authMsg');
+  err.textContent='';msg.textContent='';
+  if(!u||!p||!p2){err.textContent='Please fill in all fields.';return;}
+  if(u.length<6){err.textContent='Username must be at least 6 characters.';return;}
+  const v=pwValid(p);
+  if(!v.len){err.textContent='Password must be at least 8 characters.';return;}
+  if(!v.upper){err.textContent='Password needs an uppercase letter (A-Z).';return;}
+  if(!v.lower){err.textContent='Password needs a lowercase letter (a-z).';return;}
+  if(!v.num){err.textContent='Password needs a number (0-9).';return;}
+  if(!v.spec){err.textContent='Password needs a special character (!@#$%...).';return;}
+  if(p!==p2){err.textContent='Passwords do not match.';return;}
+  if(users[u]){err.textContent='Username already taken.';return;}
+  users[u]={password:btoa(unescape(encodeURIComponent(p))),data:freshData(),created:new Date().toISOString()};
+  saveUsersSync();
+  msg.textContent='🎉 Account created! Logging you in…';
+  currentUser=u;
+  setTimeout(launchApp,900);
+}
+function doLogout(){
+  exportData(); // auto-save on logout
+  currentUser=null;selCat=null;selSub=null;showForm=false;editIdx=null;searchQ='';
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('authScreen').style.display='';
+  ['loginUser','loginPass'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('authErr').textContent='';
+  switchTab('login');
+}
+function launchApp(){
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('appScreen').style.display='';
+  document.getElementById('userPill').textContent='👤 '+currentUser;
+  document.getElementById('userPillMobile').textContent='👤 '+currentUser;
+  selCat=null;selSub=null;showForm=false;editIdx=null;searchQ='';
+  renderCatNav();renderSidebar();renderContent();
+}
+
+/* ── MOBILE MENU ── */
+function toggleMenu(){
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+/* ── DATA ── */
+function userData(){return users[currentUser].data;}
+function persistData(){
+  users[currentUser].data=userData();
+  saveUsersSync();
+}
+
+/* ── NAV ── */
+function showHome(){selCat=null;selSub=null;showForm=false;editIdx=null;searchQ='';renderCatNav();renderSidebar();renderContent();}
+function selectCat(c){selCat=c;selSub=SUBS[0];showForm=false;editIdx=null;searchQ='';renderCatNav();renderSidebar();renderContent();}
+function selectSub(s){selSub=s;showForm=false;editIdx=null;searchQ='';renderSidebar();renderContent();}
+
+/* ── RENDER SHELL (header + search only, items updated separately) ── */
+function renderContent(){
+  const el=document.getElementById('content');
+  if(!selCat||!selSub){
+    el.innerHTML=`
+      <div class="hero">
+        <div class="hero-step" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">🗂️ Pick a category above</div>
+        <div class="hero-arrow">⬇️</div>
+        <div class="hero-step" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">🔗 Save your essential links</div>
+        <div class="hero-arrow">⬇️</div>
+        <div class="hero-step" style="background:linear-gradient(135deg,#f093fb,#f5576c)">🌴 Access them anytime, anywhere</div>
+      </div>`;
+    return;
+  }
+  // Build static shell: header + search + form placeholder + items container
+  el.innerHTML=`
+    <div class="panel-header">
+      <span class="panel-title" id="panelTitle"></span>
+      <button class="add-btn" onclick="toggleForm()">＋ Add</button>
+    </div>
+    <div class="search-wrap">
+      <input id="searchInput" placeholder="Search items…" type="search" autocomplete="off"/>
+    </div>
+    <div id="formSlot"></div>
+    <div id="itemsList"></div>`;
+
+  updatePanelTitle();
+  updateItemsList();
+
+  // Attach search listener ONCE — never re-renders the input
+  const si=document.getElementById('searchInput');
+  si.value=searchQ;
+  si.addEventListener('input',function(){
+    searchQ=this.value;
+    updateItemsList();
+  });
+
+  if(showForm) openFormSlot();
+}
+
+function updatePanelTitle(){
+  const t=document.getElementById('panelTitle');
+  if(!t)return;
+  const allItems=userData()[selCat][selSub];
+  t.innerHTML=`${CAT_ICONS[selCat]} ${selCat} › ${SUB_ICONS[selSub]} ${selSub}<span class="tag">${allItems.length}</span>`;
+}
+
+/* ── FORM ── */
+function openFormSlot(){
+  const slot=document.getElementById('formSlot');
+  if(!slot)return;
+  const isEdit=editIdx!==null;
+  const item=isEdit?userData()[selCat][selSub][editIdx]:{title:'',url:''};
+  slot.innerHTML=`
+    <div class="add-form">
+      <input id="f-title" placeholder="📝 Title / Label" value="${esc(item.title)}" onkeydown="if(event.key==='Enter')document.getElementById('f-url').focus()"/>
+      <input id="f-url" placeholder="🔗 URL (optional, e.g. https://example.com)" value="${esc(item.url||'')}" onkeydown="if(event.key==='Enter')saveItem()"/>
+      <div class="form-row">
+        <button class="save-btn" onclick="saveItem()">${isEdit?'✅ Update':'💾 Save'}</button>
+        <button class="cancel-btn" onclick="cancelForm()">✕ Cancel</button>
+      </div>
+    </div>`;
+  setTimeout(()=>{const f=document.getElementById('f-title');if(f)f.focus();},50);
+}
+
+function toggleForm(){
+  showForm=!showForm;editIdx=null;
+  if(showForm){openFormSlot();}
+  else{const s=document.getElementById('formSlot');if(s)s.innerHTML='';}
+}
+function cancelForm(){
+  showForm=false;editIdx=null;
+  const s=document.getElementById('formSlot');if(s)s.innerHTML='';
+}
+function startEdit(i){
+  showForm=true;editIdx=i;
+  openFormSlot();
+}
+function saveItem(){
+  const titleEl=document.getElementById('f-title');
+  const urlEl=document.getElementById('f-url');
+  if(!titleEl)return;
+  const title=titleEl.value.trim(),url=urlEl.value.trim();
+  if(!title&&!url)return;
+  const entry={title:title||url,url:url||''};
+  const items=userData()[selCat][selSub];
+  if(editIdx!==null) items[editIdx]=entry;
+  else items.push(entry);
+  persistData();
+  showForm=false;editIdx=null;
+  const s=document.getElementById('formSlot');if(s)s.innerHTML='';
+  updatePanelTitle();
+  updateItemsList();
+  toast(editIdx!==null?'✅ Item updated!':'✅ Item saved!');
+}
+
+/* ── ITEMS LIST (updates without touching search input) ── */
+function updateItemsList(){
+  const el=document.getElementById('itemsList');
+  if(!el)return;
+  const allItems=userData()[selCat][selSub];
+  const q=searchQ.toLowerCase().trim();
+  const items=q?allItems.filter(it=>(it.title+' '+(it.url||'')).toLowerCase().includes(q)):allItems;
+  if(items.length===0){
+    el.innerHTML=`<div class="empty"><span class="empty-icon">${q?'🔍':'🌵'}</span>${q?'No results found.':'No items yet.<br>Click <b>＋ Add</b> to get started.'}</div>`;
+    return;
+  }
+  el.innerHTML=items.map((item,i)=>{
+    const origIdx=allItems.indexOf(item);
+    const display=item.url
+      ?`<a class="item-link" href="${esc(item.url)}" target="_blank" rel="noopener">🔗 ${esc(item.title||item.url)}</a>`
+      :`<span class="item-label">📌 ${esc(item.title)}</span>`;
+    return `<div class="item-row">
+      <span class="item-num">${i+1}.</span>
+      ${display}
+      <div class="item-actions">
+        <button class="edit-btn" onclick="startEdit(${origIdx})">✎</button>
+        <button class="del-btn" onclick="deleteItem(${origIdx})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function deleteItem(i){
+  if(!confirm('Delete this item?'))return;
+  userData()[selCat][selSub].splice(i,1);
+  persistData();
+  updatePanelTitle();
+  updateItemsList();
+  toast('🗑️ Item deleted.');
+}
+
+/* ── RENDER NAV ── */
+function renderCatNav(){
+  document.getElementById('catnav').innerHTML=CATS.map(c=>
+    `<button class="cat-btn cat-${c} ${c===selCat?'active':''}" onclick="selectCat('${c}')">${CAT_ICONS[c]} ${c}</button>`
+  ).join('');
+}
+function renderSidebar(){
+  const sb=document.getElementById('sidebar');
+  if(!selCat){sb.innerHTML='';return;}
+  sb.innerHTML=SUBS.map(s=>
+    `<button class="sub-btn ${s===selSub?'active':''}" onclick="selectSub('${s}')">${SUB_ICONS[s]} ${s}</button>`
+  ).join('');
+}
+
+/* ── MODALS ── */
+function openModal(type){
+  const body=document.getElementById('modalBody');
+  if(type==='about'){
+    body.innerHTML=`
+      <h2>💡 About Info Oasis</h2>
+      <p>Info Oasis is a beautifully designed personal link and information organizer. Whether you're a student, professional, traveler, or content creator, Info Oasis gives you a private, structured space to save everything that matters — links, documents, files, and notes — organized by category and subcategory.</p>
+      <h3>🌟 Why Info Oasis?</h3>
+      <p>In today's information-overloaded world, important links get lost in chat histories, bookmark folders become unmanageable, and notes scatter across apps. Info Oasis solves this with one clean, beautiful place to organize your digital life — accessible on any device, phone or PC, without needing desktop mode.</p>
+      <h3>✨ Key Features</h3>
+      <ul>
+        <li>8 smart categories: Education, Shopping, Entertainment, Skills, Travels, Sports, Blogs & More</li>
+        <li>4 subcategories per category: Links, Documents, Files & ETC.</li>
+        <li>Built-in search in every category — instant results</li>
+        <li>Full mobile & desktop support — no desktop mode needed</li>
+        <li>Export your data as a real <strong>.json file</strong> to your device (Downloads folder)</li>
+        <li>Import your data file back on any device to restore everything</li>
+        <li>Auto-saves to file on logout</li>
+        <li>Strong account security with password complexity requirements</li>
+      </ul>
+      <h3>🔒 Your Privacy</h3>
+      <p>Info Oasis stores all your data locally on your own device. Use the <strong>💾 Save File</strong> button to download your data as a .json file to your Downloads folder anytime. No servers, no cloud — your data stays yours.</p>
+      <div class="copyright-box">
+        <p>© 2025 Info Oasis. All rights reserved.</p>
+        <p style="margin-top:6px;">Created &amp; designed by<br/><strong>A.M. Arafhat Uddona</strong> &amp; <strong>Md Sigbat Ulla Adnan</strong></p>
+        <p style="margin-top:8px;font-size:10px;color:#999;">Unauthorized reproduction, distribution, or modification of this application or its content is strictly prohibited without the express written permission of the copyright holders.</p>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕ Close</button>`;
+  } else {
+    body.innerHTML=`
+      <h2>📖 How to Use Info Oasis</h2>
+
+      <div class="step"><strong>Step 1 — Create Your Account</strong>
+        <p>Go to the <strong>Sign Up</strong> tab and fill in:<br/>
+        • <strong>Username:</strong> minimum 6 characters<br/>
+        • <strong>Password:</strong> minimum 8 characters, must include at least one uppercase letter (A–Z), one lowercase letter (a–z), one number (0–9), and one special character (e.g. !@#$%)<br/>
+        • Watch the green badges light up as your password meets each requirement.<br/>
+        • Confirm your password and tap <strong>🌟 Create Account</strong>. You'll be logged in automatically.</p>
+      </div>
+
+      <div class="step"><strong>Step 2 — Pick a Category</strong>
+        <p>After logging in you'll see 8 category buttons at the top of the screen:<br/>
+        🎓 Education &nbsp;|&nbsp; 🛍️ Shopping &nbsp;|&nbsp; 🎬 Entertainment &nbsp;|&nbsp; ⚡ Skills &nbsp;|&nbsp; ✈️ Travels &nbsp;|&nbsp; 🏆 Sports &nbsp;|&nbsp; ✍️ Blogs &nbsp;|&nbsp; ✨ More<br/>
+        Tap the one that best matches what you want to save.</p>
+      </div>
+
+      <div class="step"><strong>Step 3 — Choose a Subcategory</strong>
+        <p>After selecting a category, the left sidebar shows 4 subcategories:<br/>
+        🔗 <strong>Links</strong> — web URLs &nbsp;|&nbsp; 📄 <strong>Documents</strong> — doc links or notes &nbsp;|&nbsp; 📁 <strong>Files</strong> — file references &nbsp;|&nbsp; 📌 <strong>ETC.</strong> — anything else<br/>
+        Tap the one that fits your item.</p>
+      </div>
+
+      <div class="step"><strong>Step 4 — Save a Link</strong>
+        <p>① Tap the <strong style="color:#43e97b">＋ Add</strong> button (top-right of the panel)<br/>
+        ② A form appears — enter a <strong>Title</strong> (e.g. "My YouTube Channel")<br/>
+        ③ Paste your <strong>URL</strong> in the second field (e.g. https://youtube.com/...)<br/>
+        ④ Tap <strong style="color:#667eea">💾 Save</strong><br/>
+        ✅ Your link appears in the list. Tap it anytime to open it in your browser.<br/>
+        💡 Title-only items (no URL) are saved as plain notes with a 📌 pin icon.</p>
+      </div>
+
+      <div class="step"><strong>Step 5 — Edit or Delete an Item</strong>
+        <p>Each saved item has two action buttons:<br/>
+        • <strong style="color:#a18cd1">✎ Edit</strong> — updates the title or URL of that item<br/>
+        • <strong style="color:#ee5a24">✕ Del</strong> — permanently removes the item (you'll be asked to confirm)</p>
+      </div>
+
+      <div class="step"><strong>Step 6 — Search Your Items</strong>
+        <p>Every category panel has a 🔍 search bar at the top.<br/>
+        • Start typing any part of a title or URL — results filter <strong>instantly</strong> as you type<br/>
+        • Works on the first tap — no extra clicks needed<br/>
+        • Clear the box to see all items again</p>
+      </div>
+
+      <div class="step"><strong>Step 7 — Save Your Data as a File</strong>
+        <p>Your data is stored on your device (browser storage), but you should also keep a real file backup:<br/>
+        • Tap <strong style="color:#43e97b">💾 Save File</strong> in the top navigation bar at any time<br/>
+        • A file named <strong>InfoOasis_username_date.json</strong> will download to your device's <strong>Downloads folder</strong><br/>
+        • On mobile: find it in your Files / My Files app under Downloads<br/>
+        • On PC: find it in your <strong>C:\Users\YourName\Downloads\</strong> folder<br/>
+        • ⚠️ Your data is also <strong>auto-saved to file when you logout</strong> — so always use the Logout button!</p>
+      </div>
+
+      <div class="step"><strong>Step 8 — Restore Your Data on Any Device</strong>
+        <p>If you switch devices, reinstall a browser, or clear browser data:<br/>
+        ① Go to the <strong>Login</strong> page<br/>
+        ② Tap <strong>📂 Load saved data file</strong><br/>
+        ③ Pick your <strong>InfoOasis_username_date.json</strong> file from your Downloads<br/>
+        ④ Your username will be filled in automatically — just enter your password and log in<br/>
+        ✅ All your categories, subcategories, and links are fully restored!</p>
+      </div>
+
+      <div class="step"><strong>📱 Using on Mobile (Phone)</strong>
+        <p>• Info Oasis is fully mobile-friendly — <strong>no desktop mode needed</strong><br/>
+        • Tap ☰ (top-right) to open the menu: Home, Tutorial, About, Save File, Logout<br/>
+        • Categories scroll horizontally — swipe left/right to see all 8<br/>
+        • The sidebar and panels adjust automatically to your screen size</p>
+      </div>
+
+      <div class="step"><strong>💡 Tips & Tricks</strong>
+        <p>• You can save items with only a Title (no URL) — useful for plain notes or reminders<br/>
+        • Save your .json file regularly as a backup, especially after adding many links<br/>
+        • Use the ETC. subcategory for anything that doesn't fit Links, Documents, or Files<br/>
+        • Your password is never stored in plain text — it's always encrypted</p>
+      </div>
+
+      <button class="modal-close" onclick="closeModal()">✕ Close</button>`;
+  }
+  document.getElementById('modalOverlay').style.display='flex';
+}
+function closeModal(){document.getElementById('modalOverlay').style.display='none';}
+function closeModalOut(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
+
+/* ── UTILS ── */
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+/* ── BOOT ── */
+loadUsersSync();
+</script>
+</body>
+</html>
